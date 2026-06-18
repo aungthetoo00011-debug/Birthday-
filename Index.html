@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday မမအိပြည့်</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #fce4ec;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Georgia', serif;
+            overflow-x: hidden;
+            position: relative;
+            padding: 20px;
+        }
+
+        .container {
+            text-align: center;
+            z-index: 10;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        /* ၁။ ခွေးလေးဧရိယာ */
+        .card-wrapper {
+            position: relative;
+            width: 260px;
+            height: 240px;
+            margin: 0 auto;
+            transform: scale(0);
+            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+        }
+
+        .dog {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .dog-head {
+            position: absolute;
+            width: 120px;
+            height: 100px;
+            background: #252525;
+            border-radius: 60px 60px 50px 50px;
+            left: 70px;
+            top: 20px;
+            z-index: 3;
+        }
+
+        .ear {
+            position: absolute;
+            width: 35px;
+            height: 75px;
+            background: #151515;
+            border-radius: 20px 20px 50px 50px;
+            top: 15px;
+            z-index: 2;
+            animation: earWiggle 2s infinite alternate;
+        }
+        .ear.left { left: 55px; transform-origin: top right; }
+        .ear.right { right: 55px; transform-origin: top left; }
+
+        .eye {
+            position: absolute;
+            width: 14px;
+            height: 14px;
+            background: #000;
+            border-radius: 50%;
+            top: 40px;
+            border: 2px solid #fff;
+        }
+        .eye.left { left: 30px; }
+        .eye.right { right: 30px; }
+
+        .nose {
+            position: absolute;
+            width: 22px;
+            height: 14px;
+            background: #050505;
+            border-radius: 10px / 7px;
+            top: 55px;
+            left: 49px;
+        }
+
+        .dog-body {
+            position: absolute;
+            width: 90px;
+            height: 90px;
+            background: #252525;
+            border-radius: 40px;
+            bottom: 10px;
+            left: 85px;
+            z-index: 1;
+        }
+
+        .paw {
+            position: absolute;
+            width: 25px;
+            height: 20px;
+            background: #ffffff;
+            border-radius: 50% 50% 40% 40%;
+            bottom: 5px;
+            z-index: 4;
+            border: 2px solid #252525;
+        }
+        .paw.left { left: 80px; }
+        .paw.right { right: 80px; }
+
+        /* ကျူးလစ်ပန်းစည်း */
+        .bouquet {
+            position: absolute;
+            bottom: 25px;
+            left: 55px;
+            width: 150px;
+            height: 110px;
+            z-index: 5;
+            animation: bouquetBounce 1.5s infinite alternate ease-in-out;
+        }
+
+        .stems {
+            position: absolute;
+            width: 100%;
+            height: 50px;
+            bottom: 0;
+            background: radial-gradient(circle, #4caf50 20%, transparent 80%);
+        }
+
+        .tulip {
+            position: absolute;
+            width: 26px;
+            height: 36px;
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            box-shadow: inset 2px -2px 6px rgba(0,0,0,0.15);
+        }
+        .tulip::before {
+            content: '';
+            position: absolute;
+            top: -4px;
+            left: 6px;
+            width: 14px;
+            height: 14px;
+            background: inherit;
+            transform: rotate(45deg);
+            border-radius: 3px;
+        }
+
+        .tp1 { background: #ff4081; left: 15px; top: 15px; transform: rotate(-20deg); }
+        .tp2 { background: #ff80ab; left: 40px; top: -5px; transform: rotate(-5deg); }
+        .tp3 { background: #ffeb3b; left: 68px; top: -10px; }
+        .tp4 { background: #ff5252; left: 95px; top: 5px; transform: rotate(15deg); }
+        .tp5 { background: #e040fb; left: 118px; top: 25px; transform: rotate(25deg); }
+        .tp6 { background: #ff4081; left: 35px; top: 20px; }
+        .tp7 { background: #ffeb3b; left: 65px; top: 22px; transform: rotate(5deg); }
+        .tp8 { background: #ff5252; left: 92px; top: 25px; }
+
+        .hint-text {
+            color: #d81b60;
+            font-size: 0.9rem;
+            margin-top: 5px;
+            font-weight: bold;
+            opacity: 0;
+            animation: pulse 1s infinite alternate;
+        }
+
+        /* ၂။ Wishes စာအုပ်ပုံစံ (စာအုပ်အမြင့်ကို ၂၆၀px အထိ တိုးချဲ့လိုက်ပါတယ်) */
+        .book-container {
+            width: 320px;
+            height: 0;
+            margin: 20px auto 0 auto;
+            background: #fffdf6;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border-left: 8px solid #ad1457;
+            overflow: hidden; 
+            transition: height 1s ease, padding 1s ease;
+            opacity: 0;
+            position: relative;
+        }
+
+        .book-open {
+            height: 260px !important; /* စာအားလုံးဆံ့အောင် အမြင့်တိုးထားပါတယ် */
+            padding: 25px 20px;
+            opacity: 1 !important;
+        }
+
+        /* စာသား Scrolling ဧရိယာ */
+        .scrolling-content {
+            position: absolute;
+            top: 100%; 
+            left: 20px;
+            right: 20px;
+            text-align: left;
+        }
+
+        .start-scroll {
+            /* စာပိုဒ်အဆုံးထိ အပေါ်ကို မြင်သာအောင် တက်သွားမည့် animation */
+            animation: textScroll 9s linear forwards; 
+        }
+
+        .book-title {
+            font-size: 1.3rem;
+            color: #ad1457;
+            margin-bottom: 12px;
+            border-bottom: 2px dotted #ff80ab;
+            padding-bottom: 5px;
+            text-align: center;
+        }
+
+        .book-wishes {
+            font-size: 0.95rem;
+            color: #424242;
+            line-height: 1.6;
+            font-style: italic;
+        }
+
+        /* ခလုတ် */
+        .click-btn {
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: white;
+            background: linear-gradient(45deg, #d81b60, #ff4081);
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(216, 27, 96, 0.4);
+        }
+
+        /* နှလုံးသားများ ကြွေကျခြင်း */
+        .heart-bg {
+            position: absolute;
+            font-size: 24px;
+            color: #ff4081;
+            opacity: 0;
+            top: -20px;
+            pointer-events: none;
+        }
+
+        .show-heart { animation: heartFall 4s linear infinite; }
+
+        /* Animations */
+        @keyframes earWiggle { 0% { transform: rotate(0deg); } 100% { transform: rotate(12deg); } }
+        @keyframes bouquetBounce { 0% { transform: translateY(0); } 100% { transform: translateY(-8px); } }
+        @keyframes pulse { 0% { opacity: 0.4; } 100% { opacity: 1; } }
+        
+        /* စာသားအဆုံးအထိ တက်သွားစေမည့် Scroll ညှိချက် */
+        @keyframes textScroll {
+            0% { top: 100%; }
+            100% { top: 20px; } /* စာအုပ်အပေါ်ဆုံးအထိ စာပိုဒ်တစ်ခုလုံး အပြည့်ပေါ်အောင် တက်သွားပါမယ် */
+        }
+
+        @keyframes heartFall {
+            0% { top: -20px; opacity: 0; transform: translateX(0); }
+            10% { opacity: 0.8; }
+            100% { top: 100vh; opacity: 0; transform: translateX(80px) rotate(360deg); }
+        }
+
+        .show-card { transform: scale(1) !important; }
+    </style>
+</head>
+<body>
+
+    <div class="heart-bg" style="left: 10%; animation-delay: 0s;">❤</div>
+    <div class="heart-bg" style="left: 30%; animation-delay: 1.5s;">💖</div>
+    <div class="heart-bg" style="left: 50%; animation-delay: 0.5s;">💗</div>
+    <div class="heart-bg" style="left: 70%; animation-delay: 2.2s;">❤</div>
+    <div class="heart-bg" style="left: 90%; animation-delay: 1.1s;">🌹</div>
+
+    <div class="container">
+        <div class="card-wrapper" id="cardWrapper" onclick="openBook()">
+            <div class="dog">
+                <div class="ear left"></div>
+                <div class="ear right"></div>
+                <div class="dog-body"></div>
+                <div class="dog-head">
+                    <div class="eye left"></div>
+                    <div class="eye right"></div>
+                    <div class="nose"></div>
+                </div>
+                <div class="paw left"></div>
+                <div class="paw right"></div>
+            </div>
+            
+            <div class="bouquet">
+                <div class="stems"></div>
+                <div class="tulip tp1"></div>
+                <div class="tulip tp2"></div>
+                <div class="tulip tp3"></div>
+                <div class="tulip tp4"></div>
+                <div class="tulip tp5"></div>
+                <div class="tulip tp6"></div>
+                <div class="tulip tp7"></div>
+                <div class="tulip tp8"></div>
+            </div>
+        </div>
+
+        <div class="hint-text" id="hintText">👇 ခွေးလေးကို ထပ်နှိပ်လိုက်ပါဦး... 👇</div>
+
+        <div class="book-container" id="wishesBook">
+            <div class="scrolling-content" id="scrollContent">
+                <div class="book-title">Happy Birthday pr "မမအိပြည့်" 🌹</div>
+                <div class="book-wishes">
+                    ဒီနေ့မှာ ကျရောက်တဲ့ မွေးနေ့မှစ၍ နောင်နှစ်ပေါင်းများစွာတိုင် စိတ်ချမ်းသာ၊ ကိုယ်ကျန်းမာနဲ့ လိုအင်ဆန္ဒတွေ အကုန်ပြည့်ဝပါစေကြောင်း ဆုတောင်းပေးလိုက်ပါတယ်ခင်ဗျာ။ 🌸✨ <br><br>
+                    မွေးနေ့မှစပြီး ပျော်ရွှင်စရာနေ့ရက်လေးတွေပဲ ပိုင်ဆိုင်နိုင်ပါစေ မမ။ 💖
+                </div>
+            </div>
+        </div>
+
+        <button class="click-btn" id="clickBtn" onclick="revealDog()">ဒီမှာနှိပ်လိုက်ပါ 💖</button>
+    </div>
+
+    <script>
+        function revealDog() {
+            document.getElementById('cardWrapper').classList.add('show-card');
+            document.getElementById('hintText').style.opacity = '1';
+            
+            const hearts = document.querySelectorAll('.heart-bg');
+            hearts.forEach(heart => heart.classList.add('show-heart'));
+            
+            document.getElementById('clickBtn').style.display = 'none';
+        }
+
+        function openBook() {
+            document.getElementById('wishesBook').classList.add('book-open');
+            document.getElementById('hintText').style.display = 'none';
+            document.getElementById('scrollContent').classList.add('start-scroll');
+        }
+    </script>
+
+</body>
+</html>
